@@ -1,0 +1,3 @@
+Version 0.01.00
+
+Initial release (alpha version, tracking SKSE64's alpha state)
