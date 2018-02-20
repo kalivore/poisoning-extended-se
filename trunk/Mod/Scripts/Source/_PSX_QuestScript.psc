@@ -1,6 +1,6 @@
 Scriptname _PSX_QuestScript extends Quest  
 
-float Property CurrentVersion = 0.0100 AutoReadonly
+float Property CurrentVersion = 0.0101 AutoReadonly
 float previousVersion
 
 string Property ModName = "Poisoning Extended SE" AutoReadonly
@@ -128,6 +128,8 @@ Actor Property PlayerRef Auto
 Actor WornObjectSubject
 string currentMenu
 bool handlingKeypress
+Potion lastUsedLeft
+Potion lastUsedRght
 
 
 
@@ -270,6 +272,8 @@ event OnMenuOpen(string a_MenuName)
 	endIf
 
 	handlingKeypress = false
+	lastUsedLeft = None
+	lastUsedRght = None
 	RegisterForKey(KeycodePoisonLeft) ; direct LH poison
 	RegisterForKey(KeycodePoisonRght) ; direct RH poison
 	
@@ -356,6 +360,8 @@ endEvent
 
 event OnRequestedFormSent(string asEventName, string asStrArg, float afNumArg, Form akSender)
 
+	; DebugStuff("OnRequestedFormSent - raw trace.. asEventName: " + asEventName + "; asStrArg: " + asStrArg + "; afNumArg: " + afNumArg + "; akSender: " + akSender)
+
 	int pressedKey = afNumArg as int
 	if (pressedKey < 1 || !akSender)
 		DebugStuff("OnRequestedFormSent - key " + pressedKey + ", form " + akSender)
@@ -368,8 +374,16 @@ event OnRequestedFormSent(string asEventName, string asStrArg, float afNumArg, F
 		currentEquipSlot = 1
 	endIf
 
-	if (akSender as Potion)
-		DirectPoison(akSender as Potion, currentEquipSlot)
+	Potion toUse = akSender as Potion
+	if (!toUse && Math.RightShift(akSender.GetFormID(), 24) >= 255)
+		if (lastUsedLeft && pressedKey == KeycodePoisonLeft && WornObjectSubject.GetItemCount(lastUsedLeft) > 0)
+			toUse = lastUsedLeft
+		elseIf (lastUsedRght && pressedKey == KeycodePoisonRght && WornObjectSubject.GetItemCount(lastUsedRght) > 0)
+			toUse = lastUsedRght
+		endIf
+	endIf
+	if (toUse)
+		DirectPoison(toUse, currentEquipSlot)
 	elseIf (akSender as Weapon)
 		RemovePoison(akSender as Weapon)
 	else
@@ -389,6 +403,8 @@ event OnMenuClose(string a_MenuName)
 	currentMenu = ""
 	TargetRef = None
 	handlingKeypress = false
+	lastUsedLeft = None
+	lastUsedRght = None
 	DebugStuff("Closed " + a_MenuName)
 	UpdatePoisonWidgets()
 endEvent
@@ -448,6 +464,11 @@ Function DirectPoison(Potion akPoison, int aiHand)
 		newCharges = _Q2C_Functions.WornSetPoisonCharges(WornObjectSubject, aiHand, chargesToSet)
 	else
 		newCharges = _Q2C_Functions.WornSetPoison(WornObjectSubject, aiHand, akPoison, chargesToSet)
+	endIf
+	if (aiHand == 0)
+		lastUsedLeft = akPoison
+	else
+		lastUsedRght = akPoison
 	endIf
 	WornObjectSubject.RemoveItem(akPoison, 1, true)
 	_PSX_PoisonUse.Play(playerRef)

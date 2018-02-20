@@ -1,3 +1,9 @@
+Version 0.01.01
+
+Bumped max Charge Multiplier val to 25
+Added a workaround for the mod not recognising player-created poisons/potions after the first hotkey press
+
+
 Version 0.01.00
 
 Initial release (alpha version, tracking SKSE64's alpha state)
