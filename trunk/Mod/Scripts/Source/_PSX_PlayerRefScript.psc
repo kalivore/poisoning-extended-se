@@ -21,7 +21,21 @@ event OnPlayerLoadGame()
 endEvent
 
 Event OnAnimationEvent(ObjectReference aktarg, string EventName)
-	If !updateThrottle
+	If (!updateThrottle)
+		updateThrottle = True
+		RegisterForSingleUpdate(1.0)
+	EndIf
+EndEvent
+
+Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
+	If (!updateThrottle && (akBaseObject as Weapon) || (akBaseObject as Armor))
+		updateThrottle = True
+		RegisterForSingleUpdate(1.0)
+	EndIf
+EndEvent
+
+Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
+	If (!updateThrottle && (akBaseObject as Weapon) || (akBaseObject as Armor))
 		updateThrottle = True
 		RegisterForSingleUpdate(1.0)
 	EndIf

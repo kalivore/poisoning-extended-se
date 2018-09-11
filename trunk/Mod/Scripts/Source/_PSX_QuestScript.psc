@@ -1,6 +1,6 @@
 Scriptname _PSX_QuestScript extends Quest  
 
-float Property CurrentVersion = 0.0101 AutoReadonly
+float Property CurrentVersion = 1.0000 AutoReadonly
 float previousVersion
 
 string Property ModName = "Poisoning Extended SE" AutoReadonly
@@ -227,6 +227,8 @@ event OnMenuOpen(string a_MenuName)
 
 	currentMenu = a_MenuName
 	string msg = "Opened " + currentMenu
+
+	WornObjectSubject = None
 	if (currentMenu == "InventoryMenu" || currentMenu == "FavoritesMenu")
 		WornObjectSubject = PlayerRef
 	elseIf (currentMenu == "ContainerMenu")
@@ -238,16 +240,12 @@ event OnMenuOpen(string a_MenuName)
 			i -= 1
 		endWhile
 	
-		if (!TargetRef)
-			msg = "Can't find target for " + currentMenu + " - can't continue"
-			DebugStuff(msg, "Can't resolve target - extended functions will not be available", true)
-			return
-		endIf
-	
-		if (TargetRef.GetType() == 28) ; Container is type 28
-			WornObjectSubject = None
-		else
-			WornObjectSubject = TargetRef as Actor
+		if (TargetRef)
+			if (TargetRef.GetType() == 28) ; Container is type 28
+				WornObjectSubject = None
+			else
+				WornObjectSubject = TargetRef as Actor
+			endIf
 		endIf
 	endIf
 
@@ -256,7 +254,7 @@ event OnMenuOpen(string a_MenuName)
 	elseIf (TargetRef)
 		msg += " of " + TargetRef.GetBaseObject().GetName()
 	else
-		msg += " (of nothing)"
+		msg += " (but can't resolve target)"
 	endIf
 	DebugStuff(msg)
 
@@ -288,12 +286,18 @@ event OnTabChange(string asEventName, string asStrArg, float afNumArg, Form akSe
 	if (afNumArg == 1)
 		WornObjectSubject = PlayerRef
 	else
-		WornObjectSubject = TargetRef as Actor
+		if (TargetRef)
+			WornObjectSubject = TargetRef as Actor
+		else
+			WornObjectSubject = None
+		endIf
 	endIf
 	if (WornObjectSubject)
 		msg += " (" + WornObjectSubject.GetLeveledActorBase().GetName() + ")"
-	elseIf(TargetRef)
+	elseIf (TargetRef)
 		msg += " (" + TargetRef.GetBaseObject().GetName() + ")"
+	else
+		msg += " (can't resolve target)"
 	endIf
 	DebugStuff(msg)
 endEvent
@@ -335,7 +339,7 @@ event OnKeyDown(int aiKeyCode)
 	handlingKeypress = true
 	
 	if (!WornObjectSubject || currentMenu == "")
-		;DebugStuff("Not a person's inventory", "Not a person's inventory")
+		DebugStuff("No WornObjectSubject or unknown menu")
 		handlingKeypress = false
 		return
 	endIf
@@ -401,6 +405,7 @@ event OnMenuClose(string a_MenuName)
 	UnregisterForKey(KeycodePoisonLeft)
 	UnregisterForKey(KeycodePoisonRght)
 	currentMenu = ""
+	WornObjectSubject = None
 	TargetRef = None
 	handlingKeypress = false
 	lastUsedLeft = None

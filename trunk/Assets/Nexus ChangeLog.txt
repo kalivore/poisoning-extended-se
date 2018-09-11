@@ -1,6 +1,16 @@
+Version 1.00.00
+
+Full release (I'm not really sure if SKSE64 is actually out of beta now, but what the hell :p)
+
+On-screen widgets should update when equipping/unequipping weapons (eg using SkyUI hotkeys)
+
+Better handling of the situation where the mod cannot identify the opened container (this definitely happens with Ash Piles/Ghostly remains - there may be others).  Now, instead of throwing a message and preventing all functions, it should continue to work for items in the player's inventory.
+
+
 Version 0.01.01
 
 Bumped max Charge Multiplier val to 25
+
 Added a workaround for the mod not recognising player-created poisons/potions after the first hotkey press
 
 

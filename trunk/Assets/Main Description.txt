@@ -1,14 +1,6 @@
-An attempt to improve and extend the poisoning experience in Skyrim, giving you more options for applying poisons, and showing you what your weapons are poisoned with.
+﻿An attempt to improve and extend the poisoning experience in Skyrim, giving you more options for applying poisons, and showing you what your weapons are poisoned with.
 
 Once installed and running, you can highlight a poison in your inventory, and use hotkeys (B and N, by default) to immediately apply it to your right-hand [i]or left-hand[/i] weapon.  Once done, SkyUI wil show you what poison is applied - and there are even widgets on the HUD so you don't have to open the menu :)
-
-[line]
-[center][font=Courier New][color=#ff0000][size=4][b]- (: [ CURRENTLY ALPHA ] :) -[/b][/size][/color]
-
-Since this is SKSE-dependent, I'm going to make this track the current state of SKSE64.  As in, SKSE64 is currently in alpha release state, so this is too.
-
-Having said that, everything appears to work fine at present (I'm really impressed with how fully-functional SKSE and SkyUI are straight out of the gate!) - but given that even the core Skyrim executable is still seeing ongoing development, I [b]REALLY[/b] do not recommend using this on a long-term character just yet![/font][/center]
-[line]
 
 
 [font=Georgia][size=5][b][center][color=#44ff44]Features[/color][/center][/b][/size][/font]
